@@ -1,7 +1,6 @@
 {
   "name": "webrtc-video-chat",
   "version": "0.0.0",
-  "license": "ISC",
   "scripts": {
     "client:dev": "cd client && live-server --host=127.0.0.1 --port=5500 --cors --no-browser",
     "signaling-server:dev": "nodemon -w ./signaling-server/signaling-server.js ./signaling-server/signaling-server.js"
