@@ -1,0 +1,15 @@
+{
+  "name": "webrtc-video-chat",
+  "version": "0.0.0",
+  "license": "ISC",
+  "scripts": {
+    "client:dev": "cd client && live-server --host=127.0.0.1 --port=5500 --cors --no-browser",
+    "signaling-server:dev": "nodemon -w ./signaling-server/signaling-server.js ./signaling-server/signaling-server.js"
+  },
+  "dependencies": {
+    "live-server": "^1.2.1",
+    "nodemon": "^2.0.6",
+    "uuid": "^8.3.1",
+    "ws": "^7.4.0"
+  }
+}

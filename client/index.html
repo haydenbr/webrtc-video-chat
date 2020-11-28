@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>WebRTC Video Chat</title>
+		<link rel="stylesheet" type="text/css" href="styles.css" />
+		<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📹</text></svg>">
+	</head>
+	<body>
+		<h1>WebRTC Video Chat</h1>
+
+		<template id="video-template">
+			<div class="video-container">
+				<video autoplay playsinline></video>
+				<div class="video-label"></div>
+			</div>
+		</template>
+
+		<form id="call-settings" action="javascript:void(0);">
+			<label for="signaling-server">Signaling Server</label>
+			<input name="signaling-server" value="ws://localhost:8080" required/>
+			<br/>
+			<label for="user-name">User Name</label>
+			<input name="user-name" required/>
+			<br/>
+			<label for="stun-server">STUN Server</label>
+			<input name="stun-server" required/>
+			<br/>
+			<label for="turn-server">TURN Server</label>
+			<input name="turn-server" required/>
+			<br/>
+			<input name="join" type="submit" value="Join Call" />
+		</form>
+
+		<div id="local-video-container"></div>
+
+		<hr>
+
+		<div id="peer-video-container"></div>
+
+		<script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
+		<script type="module" src="webrtc-client.js"></script>
+	</body>
+</html>
