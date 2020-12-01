@@ -58,6 +58,10 @@ export function getUserNameInput() {
 	return getCallSettingsForm().elements['user-name'].value
 }
 
+export function setSignlaingServerUrl(url) {
+	getCallSettingsForm().elements['signaling-server'].value = url
+}
+
 export function getSignalingServerUrl() {
 	return getCallSettingsForm().elements['signaling-server'].value
 }

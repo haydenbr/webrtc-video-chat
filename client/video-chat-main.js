@@ -10,9 +10,14 @@ import {
 	getLocalVideoContainer,
 	getPeerVideoContainer,
 	setPeerVideoMediaStream,
-	removePeerVideoTemplate
+	removePeerVideoTemplate,
+	setSignlaingServerUrl
 } from './template-util.js'
-import { connectToSignalingServer, sendSignalMessage as _sendSignalMessage } from './signaling-server-connection.js'
+import {
+	connectToSignalingServer,
+	sendSignalMessage as _sendSignalMessage,
+	getDefaultSignalingServer
+} from './signaling-server-connection.js'
 import { getUserMedia } from './user-media.js'
 import { closePeerConnection, createPeerConnection } from './webrtc-util.js'
 
@@ -35,6 +40,7 @@ function init() {
 		joinCall()
 		settingsForm.onsubmit = undefined
 	}
+	setSignlaingServerUrl(getDefaultSignalingServer())
 }
 
 async function joinCall() {
