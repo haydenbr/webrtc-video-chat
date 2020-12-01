@@ -1,6 +1,6 @@
 'use strict';
 
-import { messageTypes } from './message-types.js'
+import { messageTypes } from '/shared/message-types.js'
 import {
 	getSignalingServerUrl,
 	getCallSettingsForm,

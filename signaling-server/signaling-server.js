@@ -1,6 +1,6 @@
 import WebSocket from 'ws'
 import * as uuid from 'uuid';
-import { messageTypes } from '../client/message-types.js'
+import { messageTypes } from '../shared/message-types.js'
 
 const webSocketServer = new WebSocket.Server({ port: 8080 });
 const users = {}
