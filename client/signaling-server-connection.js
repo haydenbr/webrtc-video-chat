@@ -1,7 +1,7 @@
 let signalingServer
 
 export function getDefaultSignalingServer() {
-	return `ws://${location.hostname}:8080`
+	return `wss://${location.hostname}:8080`
 }
 
 export function connectToSignalingServer(serverUrl, messageHandlers) {
