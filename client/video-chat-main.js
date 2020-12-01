@@ -124,6 +124,7 @@ function initPeerConnection(peer) {
 		oniceconnectionstatechange: handleICEConnectionStateChangeEvent,
 		onsignalingstatechange: handleSignalingStateChangeEvent,
 		// this starts the calling process
+		// this event is triggered when you add a tranceiver
 		onnegotiationneeded: createOffer,
 		// we get peer media here
 		ontrack: displayPeerMedia,
