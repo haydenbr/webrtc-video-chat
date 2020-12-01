@@ -1,13 +1,9 @@
-const WebSocket = require('ws');
-const uuid = require('uuid');
+import WebSocket from 'ws'
+import * as uuid from 'uuid';
+import { messageTypes } from '../client/message-types.js'
 
 const webSocketServer = new WebSocket.Server({ port: 8080 });
 const users = {}
-const messageTypes = {
-	connected: 'connected',
-	join: 'join',
-	userList: 'user-list',
-}
 
 webSocketServer.on('connection', (connection) => {
 	let user = {
@@ -17,13 +13,13 @@ webSocketServer.on('connection', (connection) => {
 
 	users[user.userId] = user
 
-	sendToUser(user, { type: messageTypes.connected, userId: user.userId })
+	sendToUser(user, { type: messageTypes.signalServerConnected, userId: user.userId })
 
 	connection.onmessage = (event) => {
 		let message = JSON.parse(event.data)
 		handleMessage(message)
 	}
-	
+
 	connection.onclose = () => {
 		delete users[user.userId]
 		sendUpdatedUserList()
