@@ -9,8 +9,9 @@ notes:
 todo:
 
 - research `peerConnection.setLocalDescription({type: 'rollback'})`
-- add STUN
-- add TURN
+- should both peers be sending offer and answer or just one? should both be sending ICE candidates?
+- add STUN. haven't gotten it to work with pion yet :(
+- inputs for STUN and TURN servers
 - deploy, serve securely
 - signal server logging
 - client logging
