@@ -10,6 +10,9 @@ const defaultKeyPath = join(__dirname, 'localhost.key')
 const envCertPath = process.env.SSL_CERT_PATH
 const envKeyPath = process.env.SSL_KEY_PATH
 
+console.log(envCertPath)
+console.log(envKeyPath)
+
 export const sslConfig = {
 	cert: readFileSync(envCertPath || defaultCertPath),
 	key: readFileSync(envKeyPath || defaultKeyPath),
