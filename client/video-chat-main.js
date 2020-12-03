@@ -59,6 +59,7 @@ async function joinCall() {
 }
 
 async function initLocalVideo(label) {
+	// TODO: IMPLEMENT
 	state.localMediaStream = await getUserMedia()
 	
 	insertVideoTemplate({
@@ -102,10 +103,12 @@ function updateUserList(message = { users: [{ userId: '', userName: '' }] }) {
 }
 
 function callPeers() {
+	// TODO: IMPLEMENT
 	Object.values(state.peers).forEach(peer => initPeerConnection(peer))
 }
 
 function initPeerConnection(peer) {
+	// TODO: IMPLEMENT
 	insertVideoTemplate({
 		label: peer.userName,
 		parent: getPeerVideoContainer(),
@@ -135,6 +138,7 @@ function initPeerConnection(peer) {
 }
 
 function sendIceCandidateToPeer(event, peerContext) {
+	// TODO: IMPLEMENT
   if (event.candidate) {
     sendSignalMessage({
       type: messageTypes.iceCandidate,
@@ -145,12 +149,14 @@ function sendIceCandidateToPeer(event, peerContext) {
 }
 
 function handleICEConnectionStateChangeEvent(event, peerContext) {
+	// TODO: IMPLEMENT
 	if (['closed', 'failed', 'disconnected'].includes(peerContext.peerConnection.iceConnectionState)) {
 		disposePeerConnection(peerContext)
 	}
 }
 
 function handleSignalingStateChangeEvent(event, peerContext) {
+	// TODO: IMPLEMENT
 	if (peerContext.peerConnection.signalingState === 'closed') {
     disposePeerConnection(peerContext)
   }
@@ -162,6 +168,7 @@ function disposePeerConnection(peerContext) {
 }
 
 async function createOffer(event, peerContext) {
+	// TODO: IMPLEMENT
 	let { peerConnection, peer } = peerContext
 	const offer = await peerConnection.createOffer();
 
@@ -182,6 +189,7 @@ async function createOffer(event, peerContext) {
 }
 
 function displayPeerMedia(event, peerContext) {
+	// TODO: IMPLEMENT
 	setPeerVideoMediaStream(peerContext.peer.userId, event.streams[0])
 }
 
@@ -189,6 +197,7 @@ async function respondToOffer(message = {
 	senderId: '',
 	sdp: ''
 }) {
+	// TODO: IMPLEMENT
 	let peer = state.peers[message.senderId];
 	let peerConnection = peer.peerConnection || initPeerConnection(peer);
 
@@ -217,6 +226,7 @@ async function saveSdpAnswer(message = {
 	senderId: '',
 	sdp: ''
 }) {
+	// TODO: IMPLEMENT
 	let { peerConnection } = state.peers[message.senderId];
 	let remoteSdp = new RTCSessionDescription(message.sdp);
 	
@@ -227,6 +237,7 @@ async function addIceCandidate(message = {
 	senderId: '',
 	candidate: ''
 }) {
+	// TODO: IMPLEMENT
 	let { peerConnection } = state.peers[message.senderId];
 	let candidate = new RTCIceCandidate(message.candidate);
 
