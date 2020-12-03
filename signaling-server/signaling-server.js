@@ -2,7 +2,8 @@ import WebSocket from 'ws'
 import * as uuid from 'uuid';
 import { messageTypes } from '../shared/message-types.js'
 
-const webSocketServer = new WebSocket.Server({ port: 5501 });
+const port = process.argv.includes('--prod') ? 444 : 5501
+const webSocketServer = new WebSocket.Server({ port });
 const users = {}
 
 webSocketServer.on('connection', (connection) => {

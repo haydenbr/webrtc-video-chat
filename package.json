@@ -4,7 +4,9 @@
   "scripts": {
     "start": "npm run client:dev & npm run signaling-server:dev",
     "client:dev": "node ./client-dev-server.js",
-    "signaling-server:dev": "nodemon -w ./signaling-server/signaling-server.js ./signaling-server/signaling-server.js"
+    "client:prod": "node ./client-dev-server.js --prod",
+    "signaling-server:dev": "nodemon -w ./signaling-server/signaling-server.js ./signaling-server/signaling-server.js",
+    "signaling-server:prod": "node ./signaling-server/signaling-server.js --prod"
   },
   "dependencies": {
     "live-server": "^1.2.1",
