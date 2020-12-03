@@ -58,12 +58,36 @@ export function getUserNameInput() {
 	return getCallSettingsForm().elements['user-name'].value
 }
 
-export function setSignlaingServerUrl(url) {
+export function setSignlaingServerInput(url) {
 	getCallSettingsForm().elements['signaling-server'].value = url
 }
 
-export function getSignalingServerUrl() {
+export function getSignalingServerInput() {
 	return getCallSettingsForm().elements['signaling-server'].value
+}
+
+export function setStunServerInput(url) {
+	getCallSettingsForm().elements['stun-server'].value = url
+}
+
+export function getStunServerInput() {
+	return getCallSettingsForm().elements['stun-server'].value
+}
+
+export function setTurnServerInput(url) {
+	getCallSettingsForm().elements['turn-server'].value = url
+}
+
+export function getTurnServerInput() {
+	return getCallSettingsForm().elements['turn-server'].value
+}
+
+export function getTurnUserNameInput() {
+	return getCallSettingsForm().elements['turn-user-name'].value
+}
+
+export function getTurnPasswordInput() {
+	return getCallSettingsForm().elements['turn-password'].value
 }
 
 export function getLocalVideoContainer() {

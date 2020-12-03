@@ -1,5 +1,3 @@
-import { getDefaultStunServer, getDefaultTurnServer } from './turn-server.js'
-
 export function closePeerConnection(event, peerConnection) {
 	if (!peerConnection) {
 		return
@@ -29,24 +27,10 @@ export function createPeerConnection(config = {
 	oniceconnectionstatechange: (event, peerContext) => {},
 	onsignalingstatechange: (event, peerContext) => {},
 	onnegotiationneeded: (event, peerContext) => {},
-	ontrack: (event, peerContext) => {},
+	ontrack: (event, peerContext) => { },
+	iceServers: []
 }) {
-	let peerConnection = new RTCPeerConnection({
-		iceServers: [
-			{
-				urls: getDefaultTurnServer(),
-				credentialType: "password",
-				username: "turn",
-				credential: "pion",
-			},
-			{
-				urls: getDefaultStunServer(),
-				credentialType: "password",
-				username: "turn",
-				credential: "pion",
-			}
-		]
-	})
+	let peerConnection = new RTCPeerConnection({ iceServers: config.iceServers })
 
 	config.localMediaStream
 		.getTracks()

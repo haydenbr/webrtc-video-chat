@@ -14,10 +14,10 @@ import (
 )
 
 func main() {
-	publicIP := flag.String("public-ip", "127.0.0.1", "IP Address that TURN can be contacted by.")
+	publicIP := flag.String("public-ip", "", "IP Address that TURN can be contacted by.")
 	port := flag.Int("port", 3478, "Listening port.")
 	users := flag.String("users", "turn=pion", "List of username and password (e.g. \"user=pass,user=pass\")")
-	realm := flag.String("realm", "localhost", "Realm (defaults to \"pion.ly\")")
+	realm := flag.String("realm", "localhost", "Realm")
 	flag.Parse()
 
 	udpListener, err := net.ListenPacket("udp4", "0.0.0.0:"+strconv.Itoa(*port))

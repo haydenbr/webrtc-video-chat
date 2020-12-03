@@ -2,7 +2,6 @@
 
 import { messageTypes } from '/shared/message-types.js'
 import {
-	getSignalingServerUrl,
 	getCallSettingsForm,
 	getUserNameInput,
 	hideElement,
@@ -11,7 +10,10 @@ import {
 	getPeerVideoContainer,
 	setPeerVideoMediaStream,
 	removePeerVideoTemplate,
-	setSignlaingServerUrl
+	setStunServerInput,
+	setTurnServerInput,
+	getSignalingServerInput,
+	setSignlaingServerInput
 } from './template-util.js'
 import {
 	connectToSignalingServer,
@@ -20,6 +22,7 @@ import {
 } from './signaling-server-connection.js'
 import { getUserMedia } from './user-media.js'
 import { closePeerConnection, createPeerConnection } from './webrtc-util.js'
+import { getDefaultStunServer, getDefaultTurnServer, getIceServers } from './ice-servers.js';
 
 let state = {
 	localMediaStream: undefined,
@@ -40,11 +43,13 @@ function init() {
 		joinCall()
 		settingsForm.onsubmit = undefined
 	}
-	setSignlaingServerUrl(getDefaultSignalingServer())
+	setSignlaingServerInput(getDefaultSignalingServer())
+	setStunServerInput(getDefaultStunServer())
+	setTurnServerInput(getDefaultTurnServer())
 }
 
 async function joinCall() {
-	await connectToSignalingServer(getSignalingServerUrl(), messageHandlers)
+	await connectToSignalingServer(getSignalingServerInput(), messageHandlers)
 	
 	state.currentUser.userName = getUserNameInput()
 	hideElement(getCallSettingsForm())
@@ -128,6 +133,7 @@ function initPeerConnection(peer) {
 		onnegotiationneeded: createOffer,
 		// we get peer media here
 		ontrack: displayPeerMedia,
+		iceServers: getIceServers()
 	})
 
 	state.peers[peer.userId] = {
