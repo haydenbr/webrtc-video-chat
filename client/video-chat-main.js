@@ -58,23 +58,6 @@ async function joinCall() {
 	sendJoinMessage()
 }
 
-function sendJoinMessage() {
-	sendSignalMessage({
-		type: messageTypes.join,
-		userName: state.currentUser.userName
-	})
-}
-
-function sendSignalMessage(message = {
-	recipientId: '',
-	type: ''
-}) {
-	_sendSignalMessage({
-		senderId: state.currentUser.userId,
-		...message
-	})
-}
-
 async function initLocalVideo(label) {
 	state.localMediaStream = await getUserMedia()
 	
@@ -83,6 +66,13 @@ async function initLocalVideo(label) {
 		mediaStream: state.localMediaStream,
 		muted: true,
 		parent: getLocalVideoContainer()
+	})
+}
+
+function sendJoinMessage() {
+	sendSignalMessage({
+		type: messageTypes.join,
+		userName: state.currentUser.userName
 	})
 }
 
@@ -119,7 +109,7 @@ function initPeerConnection(peer) {
 	insertVideoTemplate({
 		label: peer.userName,
 		parent: getPeerVideoContainer(),
-		videoId: getVideoId(peer.userId)
+		videoId: peer.userId
 	})
 	let peerConnection = createPeerConnection({
 		peer,
@@ -167,7 +157,7 @@ function handleSignalingStateChangeEvent(event, peerContext) {
 }
 
 function disposePeerConnection(peerContext) {
-	removePeerVideoTemplate(getVideoId(peerContext.peer.userId));
+	removePeerVideoTemplate(peerContext.peer.userId);
 	closePeerConnection(peerContext.peerConnection);
 }
 
@@ -192,7 +182,7 @@ async function createOffer(event, peerContext) {
 }
 
 function displayPeerMedia(event, peerContext) {
-	setPeerVideoMediaStream(getVideoId(peerContext.peer.userId), event.streams[0])
+	setPeerVideoMediaStream(peerContext.peer.userId, event.streams[0])
 }
 
 async function respondToOffer(message = {
@@ -243,6 +233,12 @@ async function addIceCandidate(message = {
 	await peerConnection.addIceCandidate(candidate)
 }
 
-function getVideoId(userId) {
-	return `user_${userId}`
+function sendSignalMessage(message = {
+	recipientId: '',
+	type: ''
+}) {
+	_sendSignalMessage({
+		senderId: state.currentUser.userId,
+		...message
+	})
 }

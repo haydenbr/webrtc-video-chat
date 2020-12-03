@@ -8,7 +8,7 @@ export function insertVideoTemplate(config = {
 	let newVideoTemplate = getNewVideoTemplate()
 	
 	if (config.videoId) {
-		newVideoTemplate.firstElementChild.setAttribute('id', config.videoId)
+		newVideoTemplate.firstElementChild.setAttribute('id', getVideoId(config.videoId))
 	}
 
 	let newVideo = newVideoTemplate.querySelector('video')
@@ -43,11 +43,16 @@ export function setPeerVideoMediaStream(videoId, mediaStream) {
 }
 
 export function removePeerVideoTemplate(videoId = '') {
-	removeElement(getPeerVideoTemplate(videoId))
+	let videoTemplate = getPeerVideoTemplate(videoId)
+
+	if (videoTemplate) {
+		videoTemplate.srcObject = null
+		videoTemplate.remove();
+	}
 }
 
 function getPeerVideoTemplate(videoId = '') {
-	return document.querySelector('#' + videoId)
+	return document.querySelector('#' + getVideoId(videoId))
 }
 
 export function getCallSettingsForm() {
@@ -107,6 +112,6 @@ export function hideElement(element) {
 	element.style.setProperty('display', 'none')
 }
 
-function removeElement(element) {
-	element && element.parentElement && element.parentElement.removeChild(element)
+function getVideoId(userId) {
+	return `user_${userId}`
 }
