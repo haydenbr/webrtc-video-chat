@@ -9,8 +9,8 @@ const defaultKeyPath = join(__dirname, 'localhost.key')
 
 const isProd = process.argv.includes('--prod')
 
-let certIndex = process.argv.findIndex('--ssl-cert-path')
-let keyIndex = process.argv.findIndex('--ssl-key-path')
+let certIndex = process.argv.findIndex(arg => arg === '--ssl-cert-path')
+let keyIndex = process.argv.findIndex(arg => arg === '--ssl-key-path')
 const envCertPath = isProd ? process.argv[certIndex + 1] : ''
 const envKeyPath = isProd ? process.argv[keyIndex + 1] : ''
 
