@@ -1,9 +1,17 @@
 import WebSocket from 'ws'
 import * as uuid from 'uuid';
+import { createServer as createHttpsServer } from 'https'
 import { messageTypes } from '../shared/message-types.js'
+import { sslConfig } from '../ssl-config.js'
 
-const port = process.argv.includes('--prod') ? 444 : 5501
-const webSocketServer = new WebSocket.Server({ port });
+const prod = !!process.argv.includes('--prod')
+const prodConfig = {
+	port: 444,
+	server: createHttpsServer(sslConfig)
+}
+const devConfig = { port: 5501 }
+const webSocketServer = new WebSocket.Server(prod ? prodConfig : devConfig);
+
 const users = {}
 
 webSocketServer.on('connection', (connection) => {
