@@ -167,7 +167,7 @@ function handleSignalingStateChangeEvent(event, peerContext) {
 }
 
 function disposePeerConnection(peerContext) {
-	removePeerVideoTemplate(peerContext.peer.userId)
+	removePeerVideoTemplate(getVideoId(peerContext.peer.userId));
 	closePeerConnection(peerContext.peerConnection);
 }
 

@@ -108,5 +108,5 @@ export function hideElement(element) {
 }
 
 function removeElement(element) {
-	document.body.removeChild(element)
+	element && element.parentElement && element.parentElement.removeChild(element)
 }

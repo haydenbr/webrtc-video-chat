@@ -6,6 +6,8 @@
 	overflow: hidden;
 	display: flex;
 	justify-content: center;
+	flex-shrink: 0;
+	margin: 4px;
 }
 
 .video-label {
@@ -20,4 +22,5 @@
 
 #peer-video-container {
 	display: flex;
+	flex-wrap: wrap;
 }
