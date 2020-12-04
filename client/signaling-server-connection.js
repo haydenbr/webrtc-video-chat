@@ -1,9 +1,5 @@
 let signalingServer
 
-export function getDefaultSignalingServer() {
-	return `ws://${location.hostname}:5501`
-}
-
 export function connectToSignalingServer(serverUrl, messageHandlers) {
 	return new Promise((resolve) => {
 		signalingServer = new WebSocket(serverUrl, "json");
