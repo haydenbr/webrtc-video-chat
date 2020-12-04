@@ -72,7 +72,7 @@ export function initSettingsForm(config = { onSubmit: () => { } }) {
 	}
 
 	prodSettingsButton.onclick = () => {
-		formElements['signaling-server'].value = 'wss://signaling.webrtc.haydenbraxton.com'
+		formElements['signaling-server'].value = 'wss://webrtc.haydenbraxton.com:444'
 		formElements['stun-server'].value = 'stun:webrtc.haydenbraxton.com:3478'
 		formElements['turn-server'].value = 'turn:webrtc.haydenbraxton.com:3478'
 		formElements['turn-user-name'].value = 'turn'

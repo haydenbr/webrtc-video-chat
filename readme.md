@@ -8,9 +8,9 @@ for testing on different devices on the same local network (assuming you're serv
 
 You can also test on a single device: just open multiple browser tabs, although that's not very interesting.
 
-environment variables and command args:
+command args:
 
-- `SSL_CERT_PATH` path to ssl cert
-- `SSL_KEY_PATH` path to ssl key
+- `--ssl-cert-path` path to ssl cert
+- `--ssl-key-path` path to ssl key
 - run node commands with `--prod` to use proper port numbers
 - run turn server with `--public-ip <your_public_ip>`

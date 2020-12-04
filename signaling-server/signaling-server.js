@@ -4,14 +4,10 @@ import { createServer as createHttpsServer } from 'https'
 import { messageTypes } from '../shared/message-types.js'
 import { sslConfig } from '../ssl-config.js'
 
-const prod = !!process.argv.includes('--prod')
-const prodConfig = {
-	port: 443,
-	host: '0.0.0.0',
-	server: createHttpsServer(sslConfig)
-}
+const isProd = !!process.argv.includes('--prod')
+const prodConfig = { server: createHttpsServer(sslConfig) }
 const devConfig = { port: 5501 }
-const webSocketServer = new WebSocket.Server(prod ? prodConfig : devConfig);
+const webSocketServer = new WebSocket.Server(isProd ? prodConfig : devConfig);
 
 const users = {}
 
@@ -82,4 +78,11 @@ function sendToUser(user, message) {
 
 function sendToAllUsers(message) {
 	Object.values(users).forEach(user => user.connection.send(JSON.stringify(message)))
+}
+
+if (isProd) {
+	prodConfig.server.listen({
+		host: '0.0.0.0',
+		port: 444
+	});
 }
