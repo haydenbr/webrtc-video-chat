@@ -6,6 +6,9 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
+# private keys
+*.pem
+
 # Optional npm cache directory
 .npm
 
