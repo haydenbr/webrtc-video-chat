@@ -6,7 +6,7 @@ import { sslConfig } from '../ssl-config.js'
 
 const prod = !!process.argv.includes('--prod')
 const prodConfig = {
-	port: 444,
+	port: 443,
 	host: '0.0.0.0',
 	server: createHttpsServer(sslConfig)
 }
