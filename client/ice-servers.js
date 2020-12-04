@@ -15,7 +15,7 @@ export function getIceServers() {
 			urls: callSettings.turnServer,
 			credentialType: 'password',
 			username: callSettings.turnUserName,
-			username: callSettings.turnPassword
+			password: callSettings.turnPassword
 		})
 	}
 
