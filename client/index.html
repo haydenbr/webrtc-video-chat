@@ -15,27 +15,31 @@
 			</div>
 		</template>
 
-		<form id="call-settings" action="javascript:void(0);">
-			<label for="signaling-server">Signaling Server</label>
-			<input name="signaling-server" required/>
-			<br/>
-			<label for="user-name">User Name</label>
-			<input name="user-name" required/>
-			<br/>
-			<label for="stun-server">STUN Server</label>
-			<input name="stun-server" required/>
-			<br/>
-			<label for="turn-server">TURN Server</label>
-			<input name="turn-server" required/>
-			<br/>
-			<label for="turn-user-name">TURN User Name</label>
-			<input name="turn-user-name" value="turn" required/>
-			<br/>
-			<label for="turn-password">TURN Password</label>
-			<input name="turn-password" value="pion" required/>
-			<br/>
-			<input name="join" type="submit" value="Join Call" />
-		</form>
+		<div id="call-settings">
+			<form action="javascript:void(0);">
+				<label for="signaling-server">Signaling Server</label>
+				<input name="signaling-server" required/>
+				<br/>
+				<label for="user-name">User Name</label>
+				<input name="user-name" required/>
+				<br/>
+				<label for="stun-server">STUN Server</label>
+				<input name="stun-server" required/>
+				<br/>
+				<label for="turn-server">TURN Server</label>
+				<input name="turn-server" required/>
+				<br/>
+				<label for="turn-user-name">TURN User Name</label>
+				<input name="turn-user-name" required/>
+				<br/>
+				<label for="turn-password">TURN Password</label>
+				<input name="turn-password" required/>
+				<br/>
+				<input name="join" type="submit" value="Join Call" />
+			</form>
+			<button id="local-settings">local</button>
+			<button id="prod-settings">prod</button>
+		</div>
 
 		<div id="local-video-container"></div>
 
@@ -45,6 +49,5 @@
 
 		<script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
 		<script type="module" src="video-chat-main.js"></script>
-		<!-- <script type="module" src="test.js"></script> -->
 	</body>
 </html>

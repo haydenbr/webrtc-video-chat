@@ -1,28 +1,23 @@
 import {
-	getStunServerInput,
-	getTurnPasswordInput,
-	getTurnServerInput,
-	getTurnUserNameInput
+	getCallSettings,
 } from './template-util.js'
 
-export function getDefaultStunServer() {
-	return `stun:${location.hostname}:3478`
-}
-
-export function getDefaultTurnServer() {
-	return `turn:${location.hostname}:3478`
-}
-
 export function getIceServers() {
-	return [
-		{
-			urls: getStunServerInput()
-		},
-		{
-			urls: getTurnServerInput(),
-			credentialType: "password",
-			username: getTurnUserNameInput(),
-			credential: getTurnPasswordInput()
-		}
-	]
+	let iceServers = []
+	let callSettings = getCallSettings()
+
+	if (callSettings.stunServer) {
+		iceServers.push({ urls: callSettings.stunServer })
+	}
+
+	if (callSettings.turnServer) {
+		iceServers.push({
+			urls: callSettings.turnServer,
+			credentialType: 'password',
+			username: callSettings.turnUserName,
+			username: callSettings.turnPassword
+		})
+	}
+
+	return iceServers
 }

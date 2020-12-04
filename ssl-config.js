@@ -14,9 +14,6 @@ let keyIndex = process.argv.findIndex(arg => arg === '--ssl-key-path')
 const envCertPath = isProd ? process.argv[certIndex + 1] : ''
 const envKeyPath = isProd ? process.argv[keyIndex + 1] : ''
 
-// console.log(envCertPath)
-console.log(process.env.argv)
-
 export const sslConfig = {
 	cert: readFileSync(envCertPath || defaultCertPath),
 	key: readFileSync(envKeyPath || defaultKeyPath),

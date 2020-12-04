@@ -2,27 +2,22 @@
 
 import { messageTypes } from '/shared/message-types.js'
 import {
-	getCallSettingsForm,
-	getUserNameInput,
-	hideElement,
+	getCallSettings,
 	insertVideoTemplate,
 	getLocalVideoContainer,
 	getPeerVideoContainer,
 	setPeerVideoMediaStream,
 	removePeerVideoTemplate,
-	setStunServerInput,
-	setTurnServerInput,
-	getSignalingServerInput,
-	setSignlaingServerInput
+	initSettingsForm,
+	hideCallSettings,
 } from './template-util.js'
 import {
 	connectToSignalingServer,
 	sendSignalMessage as _sendSignalMessage,
-	getDefaultSignalingServer
 } from './signaling-server-connection.js'
 import { getUserMedia } from './user-media.js'
 import { closePeerConnection, createPeerConnection } from './webrtc-util.js'
-import { getDefaultStunServer, getDefaultTurnServer, getIceServers } from './ice-servers.js';
+import { getIceServers } from './ice-servers.js';
 
 let state = {
 	localMediaStream: undefined,
@@ -32,27 +27,15 @@ let state = {
 		userId: ''
 	},
 	isNewUser: true,
-	signalingServer: undefined
 }
 
-init()
-
-function init() {
-	let settingsForm = getCallSettingsForm()
-	settingsForm.onsubmit = () => {
-		joinCall()
-		settingsForm.onsubmit = undefined
-	}
-	setSignlaingServerInput(getDefaultSignalingServer())
-	setStunServerInput(getDefaultStunServer())
-	setTurnServerInput(getDefaultTurnServer())
-}
+document.addEventListener('DOMContentLoaded', () => initSettingsForm({ onSubmit: () => joinCall() }))
 
 async function joinCall() {
-	await connectToSignalingServer(getSignalingServerInput(), messageHandlers)
+	await connectToSignalingServer(getCallSettings().signalingServer, messageHandlers)
 	
-	state.currentUser.userName = getUserNameInput()
-	hideElement(getCallSettingsForm())
+	state.currentUser.userName = getCallSettings().userName
+	hideCallSettings()
 
 	await initLocalVideo(`${state.currentUser.userName} (Me)`)
 	sendJoinMessage()
