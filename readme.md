@@ -1,16 +1,26 @@
 # WebRTC Video Chat
 
-Very *basic* reference implementation of multi-user, WebRTC video chat in the browser.
+Very basic and somewhat buggy reference implementation of multi-user, WebRTC video chat in the browser. This was developed for a meetup. I don't find slides very helpful in general, but if you want them. They are [here](https://slides.com/haydenbraxton/webrtc-video-chat). The last page of the slides has some links to some helpful learning resources, so do check that out.
 
-notes:
+When running the example, it's best to use https. You'll need this if you want to test connecting from different devices on the same local network, which is more fun. In order to do that, you'll want to create a self-signed cert. You can follow the directions [here](https://letsencrypt.org/docs/certificates-for-localhost/). The ssl config file is expecting `localhost.cert` and `localhost.key` in the root of this directory. Your browser might have trouble connecting to the signaling server when running on https, though. If that's the case, check out this [SO post](https://stackoverflow.com/questions/5312311/secure-websockets-with-self-signed-certificate/23036270#23036270).
 
-for testing on different devices on the same local network (assuming you're serving everything from a local device), you have to serve client over https, expose web socket over ws not wss, and then in Firefox, set `network.websocket.allowInsecureFromHTTPS` from `about:config`. If you just deploy everything and serve securely with real SSL, you don't have to worry about this crap.
+If you don't want to use https, just comment out this line from `./client-dev-server.js`: `https: sslConfig`.
 
-You can also test on a single device: just open multiple browser tabs, although that's not very interesting.
+To start the signaling server and client server, run `npm start`. You can open the page at `https://localhost:5500/`. (Make sure to include https if you're running https).
+
+For the turn-server,
+
+```bash
+cd ./turn-server
+./build.sh
+./build/turn-server --public-ip=<your_public_ip>
+```
+
+When running locally, you can test by opening the page in different browser tabs. You *should* also be able to test connecting from different browsers on the same local network.
 
 command args:
 
-- `--ssl-cert-path` path to ssl cert
-- `--ssl-key-path` path to ssl key
+- `--ssl-cert-path` path to ssl cert (not required when running locally)
+- `--ssl-key-path` path to ssl key (not required when running locally)
 - run node commands with `--prod` to use proper port numbers
-- run turn server with `--public-ip <your_public_ip>`
+- run turn server with `--public-ip <your_public_ip>` (set to your local ip address when running locally)
