@@ -8,9 +8,18 @@
     "signaling-server:dev": "nodemon -w ./signaling-server/signaling-server.js ./signaling-server/signaling-server.js",
     "signaling-server:prod": "node ./signaling-server/signaling-server.js --prod"
   },
+  "license": "ISC",
+  "repository": {
+    "url": "https://github.com/haydenbr/webrtc-video-chat",
+    "type": "git"
+  },
   "dependencies": {
+    "@rollup/plugin-typescript": "^8.1.0",
     "live-server": "^1.2.1",
     "nodemon": "^2.0.6",
+    "rollup": "^2.35.1",
+    "tslib": "^2.0.3",
+    "typescript": "^4.1.3",
     "uuid": "^8.3.1",
     "ws": "^7.4.0"
   },

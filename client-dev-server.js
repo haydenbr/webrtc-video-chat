@@ -9,7 +9,6 @@ liveServer.start({
 	host: '0.0.0.0',
 	root: './client',
 	open: false,
-	mount: [['/shared', './shared']],
 	logLevel: prod ? 0 : 2,
 	cors: true,
 	watch: prod ? undefined : './client',

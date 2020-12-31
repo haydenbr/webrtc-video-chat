@@ -1,0 +1,28 @@
+{
+	"compileOnSave": false,
+	"compilerOptions": {
+		"baseUrl": "./",
+		"outDir": "./client/dist",
+		"forceConsistentCasingInFileNames": true,
+		"strict": true,
+		"noImplicitReturns": true,
+		"noFallthroughCasesInSwitch": true,
+		"sourceMap": true,
+		"declaration": false,
+		"downlevelIteration": true,
+		"allowJs": true,
+		"experimentalDecorators": true,
+		"moduleResolution": "classic",
+		"importHelpers": true,
+		"target": "es2015",
+		"module": "es2020",
+		"lib": [
+			"es2018",
+			"dom"
+		]
+	},
+	"files": [
+		"./client/video-chat-main.js"
+	],
+	"include": []
+}
