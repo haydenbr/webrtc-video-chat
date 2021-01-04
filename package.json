@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "scripts": {
     "start": "npm run client:dev & npm run signaling-server:dev",
+    "rollup": "rollup --watch --config rollup.config.js",
     "client:dev": "node ./client-dev-server.js",
     "client:prod": "node ./client-dev-server.js --prod",
     "signaling-server:dev": "nodemon -w ./signaling-server/signaling-server.js ./signaling-server/signaling-server.js",
@@ -15,6 +16,7 @@
   },
   "dependencies": {
     "@rollup/plugin-typescript": "^8.1.0",
+    "@types/dom-mediacapture-record": "^1.0.7",
     "live-server": "^1.2.1",
     "nodemon": "^2.0.6",
     "rollup": "^2.35.1",

@@ -1,5 +1,6 @@
-export function closePeerConnection(event, peerConnection) {
-	// TODO: IMPLEMENT
+import { PeerContext, User } from './types';
+
+export function closePeerConnection(event: Event, peerConnection: RTCPeerConnection) {
 	if (!peerConnection) {
 		return
 	}
@@ -7,11 +8,11 @@ export function closePeerConnection(event, peerConnection) {
 	// Disconnect all our event listeners; we don't want stray events
 	// to interfere with the hangup while it's ongoing.
 	peerConnection.ontrack = null;
-	peerConnection.onnicecandidate = null;
+	peerConnection.onicecandidate = null;
 	peerConnection.oniceconnectionstatechange = null;
 	peerConnection.onsignalingstatechange = null;
 	peerConnection.onicegatheringstatechange = null;
-	peerConnection.onnotificationneeded = null;
+	peerConnection.onnegotiationneeded = null;
 
 	// Stop all transceivers on the connection
 	peerConnection.getTransceivers().forEach(transceiver => {
@@ -21,22 +22,29 @@ export function closePeerConnection(event, peerConnection) {
 	peerConnection.close()
 }
 
-export function createPeerConnection(config = {
-	peer: undefined,
-	localMediaStream: undefined,
-	onicecandidate: (event, peerContext) => {},
-	oniceconnectionstatechange: (event, peerContext) => {},
-	onsignalingstatechange: (event, peerContext) => {},
-	onnegotiationneeded: (event, peerContext) => {},
-	ontrack: (event, peerContext) => { },
-	iceServers: []
-}) {
-	// TODO: IMPLEMENT
+type PeerConnectionCallback<EventType = Event> = (event: EventType, peerContext: PeerContext) => void
+
+interface PeerConnectionConfig {
+	peer: User,
+	localMediaStream: MediaStream | undefined,
+	iceServers?: RTCIceServer[],
+	onicecandidate: PeerConnectionCallback<RTCPeerConnectionIceEvent>,
+	oniceconnectionstatechange: PeerConnectionCallback,
+	onsignalingstatechange: PeerConnectionCallback,
+	onnegotiationneeded: PeerConnectionCallback,
+	ontrack: PeerConnectionCallback<RTCTrackEvent>,
+}
+
+export function createPeerConnection(config: PeerConnectionConfig) {
 	let peerConnection = new RTCPeerConnection({ iceServers: config.iceServers })
+
+	if (!config.localMediaStream) {
+		throw new Error('config.localMediaStream is required')
+	}
 
 	config.localMediaStream
 		.getTracks()
-		.forEach(track => peerConnection.addTransceiver(track, { streams: [config.localMediaStream] }))
+		.forEach(track => peerConnection.addTransceiver(track, { streams: [config.localMediaStream!] }))
 	
 	const peerContext = {
 		peerConnection,
@@ -52,6 +60,6 @@ export function createPeerConnection(config = {
 	return peerConnection
 }
 
-function withPeerContext(callback, peerContext) {
-	return (event) => callback(event, peerContext)
+function withPeerContext<EventType>(callback: PeerConnectionCallback<EventType>, peerContext: PeerContext) {
+	return (event: EventType) => callback(event, peerContext)
 }

@@ -1,9 +1,9 @@
 import {
 	getCallSettings,
-} from './template-util.js'
+} from './template-util'
 
-export function getIceServers() {
-	let iceServers = []
+export function getIceServers(): RTCIceServer[] {
+	let iceServers: RTCIceServer[] = []
 	let callSettings = getCallSettings()
 
 	if (callSettings.stunServer) {
@@ -12,7 +12,7 @@ export function getIceServers() {
 
 	if (callSettings.turnServer) {
 		iceServers.push({
-			urls: callSettings.turnServer,
+			urls: [callSettings.turnServer],
 			credentialType: 'password',
 			username: callSettings.turnUserName,
 			credential: callSettings.turnPassword

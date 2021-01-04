@@ -1,6 +1,3 @@
-'use strict';
-
-import { messageTypes } from '../shared/message-types.js'
 import {
 	getCallSettings,
 	insertVideoTemplate,
@@ -10,18 +7,26 @@ import {
 	removePeerVideoTemplate,
 	initSettingsForm,
 	hideCallSettings,
-} from './template-util.js'
+} from './template-util'
 import {
 	connectToSignalingServer,
 	sendSignalMessage as _sendSignalMessage,
-} from './signaling-server-connection.js'
-import { getUserMedia } from './user-media.js'
-import { closePeerConnection, createPeerConnection } from './webrtc-util.js'
-import { getIceServers } from './ice-servers.js';
+} from './signaling-server-connection'
+import { getUserMedia } from './user-media'
+import { closePeerConnection, createPeerConnection } from './webrtc-util'
+import { getIceServers } from './ice-servers';
+import { User, SignalingMessageType, SignalingServerConnectedMessage, UserListMessage, OfferMessage, SignalingMessage, Peer, PeerContext, AnswerMessage, IceCandidateMessage } from './types'
 
-let state = {
+interface AppState {
+	localMediaStream: MediaStream | undefined,
+	peers: Record<string, Peer>
+	currentUser: User
+	isNewUser: boolean,
+}
+
+let state: AppState = {
 	localMediaStream: undefined,
-	peers: {}, // {[userId]: { userName: '', userId: '' }}
+	peers: {},
 	currentUser: {
 		userName: '',
 		userId: ''
@@ -31,7 +36,7 @@ let state = {
 
 document.addEventListener('DOMContentLoaded', () => initSettingsForm({ onSubmit: () => joinCall() }))
 
-async function joinCall() {
+async function joinCall(): Promise<void> {
 	await connectToSignalingServer(getCallSettings().signalingServer, messageHandlers)
 	
 	state.currentUser.userName = getCallSettings().userName
@@ -41,7 +46,7 @@ async function joinCall() {
 	sendJoinMessage()
 }
 
-async function initLocalVideo(label) {
+async function initLocalVideo(label: string) {
 	// TODO: IMPLEMENT
 	state.localMediaStream = await getUserMedia()
 	
@@ -55,24 +60,23 @@ async function initLocalVideo(label) {
 
 function sendJoinMessage() {
 	sendSignalMessage({
-		type: messageTypes.join,
-		userName: state.currentUser.userName
+		type: SignalingMessageType.Join,
 	})
 }
 
 const messageHandlers = {
-	[messageTypes.signalServerConnected]: saveUserId,
-	[messageTypes.userList]: updateUserList,
-	[messageTypes.offer]: respondToOffer,
-	[messageTypes.answer]: saveSdpAnswer,
-	[messageTypes.iceCandidate]: addIceCandidate
+	[SignalingMessageType.SignalServerConnected]: saveUserId,
+	[SignalingMessageType.UserList]: updateUserList,
+	[SignalingMessageType.Offer]: respondToOffer,
+	[SignalingMessageType.Answer]: saveSdpAnswer,
+	[SignalingMessageType.IceCandidate]: addIceCandidate
 }
 
-function saveUserId(message = { userId: '' }) {
+function saveUserId(message: SignalingServerConnectedMessage) {
 	state.currentUser.userId = message.userId
 }
 
-function updateUserList(message = { users: [{ userId: '', userName: '' }] }) {
+function updateUserList(message: UserListMessage) {
 	message.users.forEach(u => {
 		if (u.userId !== state.currentUser.userId && !state.peers[u.userId]) {
 			state.peers[u.userId] = u
@@ -90,7 +94,7 @@ function callPeers() {
 	Object.values(state.peers).forEach(peer => initPeerConnection(peer))
 }
 
-function initPeerConnection(peer) {
+function initPeerConnection(peer: Peer) {
 	// TODO: IMPLEMENT
 	insertVideoTemplate({
 		label: peer.userName,
@@ -120,37 +124,37 @@ function initPeerConnection(peer) {
 	return peerConnection
 }
 
-function sendIceCandidateToPeer(event, peerContext) {
+function sendIceCandidateToPeer(event: RTCPeerConnectionIceEvent, peerContext: PeerContext) {
 	// TODO: IMPLEMENT
   if (event.candidate) {
     sendSignalMessage({
-      type: messageTypes.iceCandidate,
+      type: SignalingMessageType.IceCandidate,
       recipientId: peerContext.peer.userId,
       candidate: event.candidate
     });
   }
 }
 
-function handleICEConnectionStateChangeEvent(event, peerContext) {
+function handleICEConnectionStateChangeEvent(event: Event, peerContext: PeerContext) {
 	// TODO: IMPLEMENT
 	if (['closed', 'failed', 'disconnected'].includes(peerContext.peerConnection.iceConnectionState)) {
-		disposePeerConnection(peerContext)
+		disposePeerConnection(event, peerContext)
 	}
 }
 
-function handleSignalingStateChangeEvent(event, peerContext) {
+function handleSignalingStateChangeEvent(event: Event, peerContext: PeerContext) {
 	// TODO: IMPLEMENT
 	if (peerContext.peerConnection.signalingState === 'closed') {
-    disposePeerConnection(peerContext)
+    disposePeerConnection(event, peerContext)
   }
 }
 
-function disposePeerConnection(peerContext) {
+function disposePeerConnection(event: Event, peerContext: PeerContext) {
 	removePeerVideoTemplate(peerContext.peer.userId);
-	closePeerConnection(peerContext.peerConnection);
+	closePeerConnection(event, peerContext.peerConnection);
 }
 
-async function createOffer(event, peerContext) {
+async function createOffer(event: Event, peerContext: PeerContext) {
 	// TODO: IMPLEMENT
 	let { peerConnection, peer } = peerContext
 	const offer = await peerConnection.createOffer();
@@ -166,20 +170,17 @@ async function createOffer(event, peerContext) {
 
 	sendSignalMessage({
 		recipientId: peer.userId,
-		type: messageTypes.offer,
+		type: SignalingMessageType.Offer,
 		sdp: peerConnection.localDescription
 	});
 }
 
-function displayPeerMedia(event, peerContext) {
+function displayPeerMedia(event: RTCTrackEvent, peerContext: PeerContext) {
 	// TODO: IMPLEMENT
 	setPeerVideoMediaStream(peerContext.peer.userId, event.streams[0])
 }
 
-async function respondToOffer(message = {
-	senderId: '',
-	sdp: ''
-}) {
+async function respondToOffer(message: OfferMessage) {
 	// TODO: IMPLEMENT
 	let peer = state.peers[message.senderId];
 	let peerConnection = peer.peerConnection || initPeerConnection(peer);
@@ -200,37 +201,38 @@ async function respondToOffer(message = {
 
   sendSignalMessage({
 		recipientId: message.senderId,
-    type: messageTypes.answer,
+    type: SignalingMessageType.Answer,
     sdp: peerConnection.localDescription
   });
 }
 
-async function saveSdpAnswer(message = {
-	senderId: '',
-	sdp: ''
-}) {
+async function saveSdpAnswer(message: AnswerMessage) {
 	// TODO: IMPLEMENT
 	let { peerConnection } = state.peers[message.senderId];
+
+	if (!peerConnection) {
+		throw new Error('peerConnection undefined');
+	}
+
 	let remoteSdp = new RTCSessionDescription(message.sdp);
 	
 	await peerConnection.setRemoteDescription(remoteSdp);
 }
 
-async function addIceCandidate(message = {
-	senderId: '',
-	candidate: ''
-}) {
+async function addIceCandidate(message: IceCandidateMessage) {
 	// TODO: IMPLEMENT
 	let { peerConnection } = state.peers[message.senderId];
+	if (!peerConnection) {
+		throw new Error('peerConnection undefined');
+		return;
+	}
+	
 	let candidate = new RTCIceCandidate(message.candidate);
 
 	await peerConnection.addIceCandidate(candidate)
 }
 
-function sendSignalMessage(message = {
-	recipientId: '',
-	type: ''
-}) {
+function sendSignalMessage(message: { type: SignalingMessageType, recipientId: string }) {
 	_sendSignalMessage({
 		senderId: state.currentUser.userId,
 		...message

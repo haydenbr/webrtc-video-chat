@@ -12,7 +12,7 @@
 		"downlevelIteration": true,
 		"allowJs": true,
 		"experimentalDecorators": true,
-		"moduleResolution": "classic",
+		"moduleResolution": "node",
 		"importHelpers": true,
 		"target": "es2015",
 		"module": "es2020",
@@ -22,7 +22,7 @@
 		]
 	},
 	"files": [
-		"./client/video-chat-main.js"
+		"./client/video-chat-main.ts"
 	],
 	"include": []
 }

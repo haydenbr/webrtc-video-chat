@@ -16,7 +16,7 @@ cd ./turn-server
 ./build/turn-server --public-ip=<your_public_ip>
 ```
 
-When running locally, you can test by opening the page in different browser tabs. You *should* also be able to test connecting from different browsers on the same local network.
+When running locally, you can test by opening the page in different browser tabs. If you use https, you can also test connecting from different browsers on the same local network.
 
 command args:
 
