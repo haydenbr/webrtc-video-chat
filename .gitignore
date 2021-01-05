@@ -8,6 +8,8 @@ yarn-error.log*
 
 # private keys
 *.pem
+*.cert
+*.key
 
 # Optional npm cache directory
 .npm
