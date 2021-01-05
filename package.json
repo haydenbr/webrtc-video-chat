@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "scripts": {
     "start": "npm run client:dev & npm run signaling-server:dev",
-    "rollup": "rollup --watch --config rollup.config.js",
+    "rollup": "rollup --config rollup.config.js --watch",
     "client:dev": "node ./client-dev-server.js",
     "client:prod": "node ./client-dev-server.js --prod",
     "signaling-server:dev": "nodemon -w ./signaling-server/signaling-server.js ./signaling-server/signaling-server.js",
@@ -15,15 +15,15 @@
     "type": "git"
   },
   "dependencies": {
-    "@rollup/plugin-typescript": "^8.1.0",
-    "@types/dom-mediacapture-record": "^1.0.7",
-    "live-server": "^1.2.1",
-    "nodemon": "^2.0.6",
-    "rollup": "^2.35.1",
-    "tslib": "^2.0.3",
-    "typescript": "^4.1.3",
-    "uuid": "^8.3.1",
-    "ws": "^7.4.0"
+    "@types/dom-mediacapture-record": "1.0.7",
+    "live-server": "1.2.1",
+    "nodemon": "2.0.6",
+    "rollup": "2.35.1",
+    "rollup-plugin-typescript2": "0.29.0",
+    "tslib": "2.0.3",
+    "typescript": "4.1.3",
+    "uuid": "8.3.1",
+    "ws": "7.4.0"
   },
   "type": "module"
 }

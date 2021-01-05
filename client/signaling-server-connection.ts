@@ -1,8 +1,8 @@
-import { SignalingMessage, SignalingMessageType } from "./types";
+import { BaseSignalingMessage, SignalingMessage, SignalingMessageType } from "./types";
 
 let signalingServer: WebSocket
 
-type MessageHandlers = Record<SignalingMessageType, (message: SignalingMessage) => any>
+type MessageHandlers<T = any> = Partial<Record<SignalingMessageType, (message: T) => any>>
 
 export function connectToSignalingServer(serverUrl: string, messageHandlers: MessageHandlers) {
 	return new Promise<void>((resolve) => {
@@ -24,6 +24,6 @@ export function connectToSignalingServer(serverUrl: string, messageHandlers: Mes
 	})
 }
 
-export function sendSignalMessage(message: SignalingMessage) {
+export function sendSignalMessage<T extends BaseSignalingMessage>(message: T) {
 	signalingServer.send(JSON.stringify(message))
 }

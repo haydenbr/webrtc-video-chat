@@ -1,3 +1,4 @@
+export * from './app-state.interface'
 export * from './peer-context.interface'
 export * from './user.interface'
 export * from './signaling-message-type.enum'

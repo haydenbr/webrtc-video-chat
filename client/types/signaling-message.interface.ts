@@ -1,39 +1,39 @@
 import { SignalingMessageType } from "./signaling-message-type.enum";
 import { User } from './user.interface'
 
-interface Message {
+export interface BaseSignalingMessage {
 	type: SignalingMessageType,
 	senderId: string
 	recipientId: string
 }
 
-export interface SignalingServerConnectedMessage extends Message {
+export interface SignalingServerConnectedMessage extends BaseSignalingMessage {
 	type: SignalingMessageType.SignalServerConnected,
 	userId: string,
 	senderId: never
 }
 
-export interface JoinMessage extends Message {
+export interface JoinMessage extends BaseSignalingMessage {
 	type: SignalingMessageType.Join,
 	recipientId: never
 }
 
-export interface UserListMessage extends Message {
+export interface UserListMessage extends BaseSignalingMessage {
 	type: SignalingMessageType.UserList,
 	users: User[]
 }
 
-export interface OfferMessage extends Message {
+export interface OfferMessage extends BaseSignalingMessage {
 	type: SignalingMessageType.Offer,
-	sdp: RTCSessionDescriptionInit
+	sdp: RTCSessionDescriptionInit | undefined
 }
 
-export interface AnswerMessage extends Message {
+export interface AnswerMessage extends BaseSignalingMessage {
 	type: SignalingMessageType.Answer,
-	sdp: RTCSessionDescriptionInit
+	sdp: RTCSessionDescriptionInit | undefined
 }
 
-export interface IceCandidateMessage extends Message {
+export interface IceCandidateMessage extends BaseSignalingMessage {
 	type: SignalingMessageType.IceCandidate
 	candidate: RTCIceCandidate
 }

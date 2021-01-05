@@ -15,14 +15,7 @@ import {
 import { getUserMedia } from './user-media'
 import { closePeerConnection, createPeerConnection } from './webrtc-util'
 import { getIceServers } from './ice-servers';
-import { User, SignalingMessageType, SignalingServerConnectedMessage, UserListMessage, OfferMessage, SignalingMessage, Peer, PeerContext, AnswerMessage, IceCandidateMessage } from './types'
-
-interface AppState {
-	localMediaStream: MediaStream | undefined,
-	peers: Record<string, Peer>
-	currentUser: User
-	isNewUser: boolean,
-}
+import { SignalingMessageType, SignalingServerConnectedMessage, UserListMessage, OfferMessage, Peer, PeerContext, AnswerMessage, IceCandidateMessage, AppState } from './types'
 
 let state: AppState = {
 	localMediaStream: undefined,
@@ -202,7 +195,7 @@ async function respondToOffer(message: OfferMessage) {
   sendSignalMessage({
 		recipientId: message.senderId,
     type: SignalingMessageType.Answer,
-    sdp: peerConnection.localDescription
+		sdp: peerConnection?.localDescription ?? undefined,
   });
 }
 
@@ -224,7 +217,6 @@ async function addIceCandidate(message: IceCandidateMessage) {
 	let { peerConnection } = state.peers[message.senderId];
 	if (!peerConnection) {
 		throw new Error('peerConnection undefined');
-		return;
 	}
 	
 	let candidate = new RTCIceCandidate(message.candidate);
@@ -232,9 +224,9 @@ async function addIceCandidate(message: IceCandidateMessage) {
 	await peerConnection.addIceCandidate(candidate)
 }
 
-function sendSignalMessage(message: { type: SignalingMessageType, recipientId: string }) {
+function sendSignalMessage(message: any) {
 	_sendSignalMessage({
+		...message,
 		senderId: state.currentUser.userId,
-		...message
 	})
 }

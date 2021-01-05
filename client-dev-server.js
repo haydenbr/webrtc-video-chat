@@ -7,7 +7,7 @@ const port = prod ? 443 : 5500
 liveServer.start({
 	port,
 	host: '0.0.0.0',
-	root: './client',
+	root: './client/dist',
 	open: false,
 	logLevel: prod ? 0 : 2,
 	cors: true,

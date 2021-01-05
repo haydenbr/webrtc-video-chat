@@ -1,7 +1,7 @@
 import WebSocket from 'ws'
 import * as uuid from 'uuid';
 import { createServer as createHttpsServer } from 'https'
-import { messageTypes } from '../shared/message-types.js'
+import { messageTypes } from './message-types.js'
 import { sslConfig } from '../ssl-config.js'
 
 const isProd = !!process.argv.includes('--prod')
