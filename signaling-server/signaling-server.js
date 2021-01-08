@@ -5,9 +5,11 @@ import { messageTypes } from '../shared/message-types.js'
 import { sslConfig } from '../ssl-config.js'
 
 const isProd = !!process.argv.includes('--prod')
-const prodConfig = { server: createHttpsServer(sslConfig) }
-const devConfig = { port: 5501 }
-const webSocketServer = new WebSocket.Server(isProd ? prodConfig : devConfig);
+const webSocketServer = new WebSocket.Server(
+	isProd
+		? { server: createHttpsServer(sslConfig) }
+		: { port: 5501 }
+);
 
 const users = {}
 

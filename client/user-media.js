@@ -1,4 +1,5 @@
 export function getUserMedia() {
+	// TODO: IMPLEMENT
 	return navigator.mediaDevices
 		.getUserMedia({
 			audio: true,
