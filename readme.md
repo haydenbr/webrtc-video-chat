@@ -21,8 +21,13 @@ command args:
 - run node commands with `--prod` to use proper port numbers
 - run turn server with `--public-ip <your_public_ip>` (set to your local ip address when running locally)
 
-## Some fun ideas if you want to tinker:
+## Some ideas for enhancements if you want to tinker:
 
+- mute/unmute
+- turn camera on/off
+- switch camera source
+- share screen (hint: https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getDisplayMedia)
+- live chat (not really WebRTC, but could still be fun to try if you're new to web sockets)
 - try forcing the peers to use a specific ICE candidate pair by filtering what ice candidates you send over the signaling server.
-- implement mute/unmute and start/stop video
- 
+- share files or other data over WebRTC (hint: https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/createDataChannel)
+- 

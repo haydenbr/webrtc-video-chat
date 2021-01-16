@@ -86,7 +86,6 @@ function updateUserList(message = { users: [{ userId: '', userName: '' }] }) {
 }
 
 function callPeers() {
-	// TODO: IMPLEMENT
 	Object.values(state.peers).forEach(peer => initPeerConnection(peer))
 }
 
@@ -132,14 +131,12 @@ function sendIceCandidateToPeer(event, peerContext) {
 }
 
 function handleICEConnectionStateChangeEvent(event, peerContext) {
-	// TODO: IMPLEMENT
 	if (['closed', 'failed', 'disconnected'].includes(peerContext.peerConnection.iceConnectionState)) {
 		disposePeerConnection(peerContext)
 	}
 }
 
 function handleSignalingStateChangeEvent(event, peerContext) {
-	// TODO: IMPLEMENT
 	if (peerContext.peerConnection.signalingState === 'closed') {
     disposePeerConnection(peerContext)
   }

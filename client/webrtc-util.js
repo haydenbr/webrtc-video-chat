@@ -1,5 +1,4 @@
 export function closePeerConnection(event, peerConnection) {
-	// TODO: IMPLEMENT
 	if (!peerConnection) {
 		return
 	}
@@ -31,7 +30,7 @@ export function createPeerConnection(config = {
 	ontrack: (event, peerContext) => { },
 	iceServers: []
 }) {
-	// TODO: IMPLEMENT
+	// TODO: IMPLEMENT START
 	let peerConnection = new RTCPeerConnection({ iceServers: config.iceServers })
 
 	config.localMediaStream
@@ -42,6 +41,7 @@ export function createPeerConnection(config = {
 		peerConnection,
 		peer: config.peer
 	}
+	// TODO: IMPLEMENT END
 
 	peerConnection.onicecandidate = withPeerContext(config.onicecandidate, peerContext);
   peerConnection.oniceconnectionstatechange = withPeerContext(config.oniceconnectionstatechange, peerContext);
