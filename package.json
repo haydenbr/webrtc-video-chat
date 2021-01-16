@@ -11,6 +11,7 @@
   "dependencies": {
     "live-server": "^1.2.1",
     "nodemon": "^2.0.6",
+    "queue": "^6.0.2",
     "uuid": "^8.3.1",
     "ws": "^7.4.0"
   },

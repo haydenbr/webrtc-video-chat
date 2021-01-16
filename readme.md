@@ -26,8 +26,9 @@ command args:
 - mute/unmute
 - turn camera on/off
 - switch camera source
+- allow participants to rename themselves
 - share screen (hint: https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getDisplayMedia)
 - live chat (not really WebRTC, but could still be fun to try if you're new to web sockets)
 - try forcing the peers to use a specific ICE candidate pair by filtering what ice candidates you send over the signaling server.
 - share files or other data over WebRTC (hint: https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/createDataChannel)
-- 
+- experiment with different signaling server implementations. I built the simplest possible thing that would work, but you could use any technology or messaging system you want.

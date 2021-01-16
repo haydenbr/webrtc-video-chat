@@ -1,17 +1,20 @@
 import WebSocket from 'ws'
 import * as uuid from 'uuid';
+import { createServer as createHttpServer } from 'http'
 import { createServer as createHttpsServer } from 'https'
+import queue from 'queue'
 import { messageTypes } from '../shared/message-types.js'
 import { sslConfig } from '../ssl-config.js'
 
 const isProd = !!process.argv.includes('--prod')
-const webSocketServer = new WebSocket.Server(
-	isProd
-		? { server: createHttpsServer(sslConfig) }
-		: { port: 5501 }
-);
+let httpServer = isProd
+	? createHttpsServer(sslConfig)
+	: createHttpServer()
+
+const webSocketServer = new WebSocket.Server({ server: httpServer });
 
 const users = {}
+const joinRequestQueue = queue({ concurrency: 1, autostart: true })
 
 webSocketServer.on('connection', (connection) => {
 	let user = {
@@ -34,15 +37,9 @@ webSocketServer.on('connection', (connection) => {
 	}
 });
 
-const messageHandlers = {
-	[messageTypes.join]: handleJoin,
-}
-
 function handleMessage(message) {
-	let handler = messageHandlers[message.type]
-
-	if (handler) {
-		handler(message)
+	if (message.type === messageTypes.join) {
+		joinRequestQueue.push(() => handleJoin(message))
 	} else if (message.senderId && message.recipientId) {
 		let recipient = users[message.recipientId]
 		sendToUser(recipient, message)
@@ -57,11 +54,11 @@ function handleJoin(message) {
 		userName: message.userName
 	}
 
-	sendUpdatedUserList()
+	return sendUpdatedUserList()
 }
 
 function sendUpdatedUserList() {
-	sendToAllUsers({
+	return sendToAllUsers({
 		type: messageTypes.userList,
 		users: getUserList()
 	})
@@ -75,16 +72,26 @@ function getUserList() {
 }
 
 function sendToUser(user, message) {
-	user.connection.send(JSON.stringify(message))
+	return new Promise((resolve, reject) =>
+		user.connection.send(
+			JSON.stringify(message),
+			(error) => error ? reject(error) : resolve()
+		)
+	)
 }
 
 function sendToAllUsers(message) {
-	Object.values(users).forEach(user => user.connection.send(JSON.stringify(message)))
+	return Promise.all(
+		Object
+			.values(users)
+			.map(user =>
+				sendToUser(user, message)
+					.catch(error => console.log(error))
+			)
+	)
 }
 
-if (isProd) {
-	prodConfig.server.listen({
-		host: '0.0.0.0',
-		port: 444
-	});
-}
+httpServer.listen({
+	host: '0.0.0.0',
+	port: isProd ? 444 : 5501
+})
