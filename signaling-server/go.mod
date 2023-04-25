@@ -1,4 +1,4 @@
-module github.com/haydenbr/webrtc-video-chat/signaling-server
+module github.com/haydenbr/sigserver
 
 go 1.20
 

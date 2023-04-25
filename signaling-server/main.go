@@ -6,83 +6,27 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"sync"
 
-	"github.com/google/uuid"
 	"github.com/gorilla/websocket"
-	"github.com/samber/lo"
+
+	"github.com/haydenbr/sigserver/signaling"
 )
 
 var host = flag.String("host", "0.0.0.0", "http host")
 var port = flag.String("port", "8080", "http port")
 var upgrader = websocket.Upgrader{} // use default options
 
-type User struct {
-	id          string
-	userName    string
-	displayName string
-	acked       bool
-}
+func handleConnection(c *websocket.Conn) string {
+	newUser := signaling.CreateNewUser()
 
-type SignalingMessageType int
-
-const (
-	ServerAck SignalingMessageType = iota
-	ClientAck
-	UserList
-	AddUser
-	UpdateUser
-	DeleteUser
-)
-
-type SignalingMessage struct {
-	MessageType SignalingMessageType
-	Payload     interface{}
-}
-
-type ServerAckPayload struct {
-	userId string
-}
-
-type UserListPayload struct {
-	users []User
-}
-
-func (user *User) MarshalJSON() ([]byte, error) {
-	return json.Marshal(*user)
-}
-
-var userMap = make(map[string]*User)
-var userList = make([]*User, 0)
-var userLock = sync.RWMutex{}
-
-func persistUser(user *User) {
-	userMap[user.id] = user
-	userList = append(userList, user)
-}
-
-func handleConnection(c *websocket.Conn) {
-	newUser := User{id: uuid.NewString()}
-	writeErr := c.WriteJSON(newUser)
-
-	if writeErr != nil {
-		log.Println("write message error:", writeErr)
-	}
-
-	sendServerAck(c, newUser.id)
-	userLock.Lock()
+	sendServerAck(c, newUser)
 	sendUserList(c)
-	persistUser(&newUser)
-	userLock.Unlock()
+
+	return newUser.Id
 }
 
-func sendServerAck(c *websocket.Conn, userId string) {
-	wsWriteErr := c.WriteJSON(SignalingMessage{
-		MessageType: ServerAck,
-		Payload: ServerAckPayload{
-			userId: userId,
-		},
-	})
+func sendServerAck(c *websocket.Conn, user *signaling.User) {
+	wsWriteErr := c.WriteJSON(signaling.NewServerAckMessage(user.Id))
 
 	if wsWriteErr != nil {
 		fmt.Println("error sending server ack message:", wsWriteErr)
@@ -90,18 +34,30 @@ func sendServerAck(c *websocket.Conn, userId string) {
 }
 
 func sendUserList(c *websocket.Conn) {
-	ackedUserList := lo.Filter(userList, func(user *User, index int) bool {
-		return user.acked
+	c.WriteJSON(signaling.GetAckedUsers())
+}
+
+func sendNewUserNotification() {
+	// notify all other users (acked and not acked) that there's a new user
+	// we need to do this in a way that doesn't require us to save a pointer to each user's ws connection on the user object
+}
+
+func handleClientAck(c *websocket.Conn, clientAck *signaling.ClientAckPayload) {
+	signaling.AckUser(clientAck.UserId, clientAck.UserName)
+	sendNewUserNotification()
+}
+
+func sendUserLeave(c *websocket.Conn, userId string) {
+	wsWriteErr := c.WriteJSON(signaling.Message{
+		MessageType: signaling.ServerAck,
+		Payload: signaling.ServerAckPayload{
+			UserId: userId,
+		},
 	})
-	c.WriteJSON(ackedUserList)
-}
 
-func sendNewUserNotification(c *websocket.Conn) {
-
-}
-
-func handleClientAck() {
-
+	if wsWriteErr != nil {
+		fmt.Println("error sending server ack message:", wsWriteErr)
+	}
 }
 
 func signal(w http.ResponseWriter, r *http.Request) {
@@ -112,7 +68,7 @@ func signal(w http.ResponseWriter, r *http.Request) {
 	}
 	defer c.Close()
 
-	handleConnection(c)
+	userId := handleConnection(c)
 
 	for {
 		messageType, message, readErr := c.ReadMessage()
@@ -123,23 +79,18 @@ func signal(w http.ResponseWriter, r *http.Request) {
 		}
 
 		if messageType == websocket.CloseMessage {
-			// do cleanup, remove user
+			signaling.RemoveUser(userId)
 		}
 
 		if messageType == websocket.TextMessage {
-			messageJson := new(SignalingMessage)
+			messageJson := new(signaling.Message)
 			jsonErr := json.Unmarshal(message, &messageJson)
 
 			if jsonErr != nil {
 				log.Println("json parse error:", jsonErr)
 			}
 
-			wsWriteErr := c.WriteMessage(websocket.TextMessage, message)
-
-			if wsWriteErr != nil {
-				log.Println("write:", wsWriteErr)
-				break
-			}
+			// TODO: handle message, actually
 		}
 
 		log.Printf("unhandled message type: %d %v\n", messageType, message)
